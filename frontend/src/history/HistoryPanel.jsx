@@ -4,7 +4,7 @@ import { MCQChallenge } from '../challenge/MCQChallenge'
 
 export function HistoryPanel() {
     
-    const [history, setHistory] = useState()
+    const [history, setHistory] = useState([])
     const [isLoading, setisLoading] = useState(true)
     const [error, setError] = useState(null)
     
