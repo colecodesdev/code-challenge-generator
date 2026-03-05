@@ -1,32 +1,73 @@
-import {useAuth} from "@clerk/clerk-react"
+let getToken = async () => null
 
-export const useApi = () => {
-    const {getToken} = useAuth ()
+if (import.meta.env.VITE_CLERK_PUBLISHABLE_KEY) {
+    const mod = await import("@clerk/clerk-react")
+    const { useAuth } = mod
 
-    const makeRequest = async (endpoint, options = {}) => {
-        const token = await getToken()
-        const defaultOptions = {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            }
+    getToken = async () => {
+        try {
+            const auth = useAuth()
+            if (!auth || !auth.getToken) return null
+            return await auth.getToken()
+        } catch {
+            return null
         }
+    }
+}
 
-        const response = await fetch(`http://localhost:8000/api/${endpoint}`, {
-            ...defaultOptions,
-            ...options,
-        })
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000"
 
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => null)
-            if (response.status === 429) {
-                throw new Error("Daily quota exceeded")
-            }
-            throw new Error(errorData?.detail || "An error occured")
-        }
-
-        return response.json()
+async function request(path, options = {}) {
+    const token = await getToken()
+    const headers = {
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
     }
 
-    return {makeRequest}
+    if (token) {
+        headers.Authorization = `Bearer ${token}`
+    }
+
+    const res = await fetch(`${API_BASE_URL}${path}`, {
+        ...options,
+        headers,
+    })
+
+    const text = await res.text()
+    let data = null
+    try {
+        data = text ? JSON.parse(text) : null
+    } catch {
+        data = text
+    }
+
+    if (!res.ok) {
+        const msg = data?.detail || data?.message || "Request failed"
+        throw new Error(msg)
+    }
+
+    return data
+}
+
+export async function getQuota() {
+    return request("/api/quota")
+}
+
+export async function generateChallenge(difficulty) {
+    return request("/api/generate-challenge", {
+        method: "POST",
+        body: JSON.stringify({ difficulty }),
+    })
+}
+
+export async function getHistory() {
+    return request("/api/history")
+}
+
+export function useApi() {
+    return {
+        getQuota,
+        generateChallenge,
+        getHistory,
+    }
 }
