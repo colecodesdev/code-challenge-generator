@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { MCQChallenge } from "../challenge/MCQChallenge.jsx";
 import { useApi } from "../utils/api.js";
+import { ChallengeHeader } from "../challenge/ChallengeHeader.jsx";
 
 export function HistoryPanel() {
     const [history, setHistory] = useState([]);
@@ -33,7 +34,7 @@ export function HistoryPanel() {
     if (error) {
         return (
             <div className="history-panel">
-                <h2>History</h2>
+                <ChallengeHeader />
                 <div className="error-message">{error}</div>
                 <button type="button" className="generate-button" onClick={fetchHistory}>
                     Retry
@@ -44,11 +45,11 @@ export function HistoryPanel() {
 
     return (
         <div className="history-panel">
-            <h2>History</h2>
+            <ChallengeHeader />
 
             {history.length === 0 ? (
                 <div className="history-note">
-                    <p>No challenge history (or backend endpoint not available).</p>
+                    <p>No challenge history.</p>
                 </div>
             ) : (
                 <div className="history-list">

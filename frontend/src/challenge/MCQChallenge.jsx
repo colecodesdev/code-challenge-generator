@@ -1,11 +1,24 @@
 import { useState } from "react";
 
+function formatPrompt(text) {
+    if (!text || typeof text !== "string") return "";
+    return text
+        .replace(/```[a-zA-Z]*\n?/g, "")
+        .replace(/```/g, "")
+        .trim();
+}
+
 export function MCQChallenge({ challenge, showExplanation = false }) {
     const [selectedOption, setSelectedOption] = useState(null);
     const [shouldShowExplanation, setShouldShowExplanation] = useState(showExplanation);
 
     const options =
         typeof challenge.options === "string" ? JSON.parse(challenge.options) : challenge.options;
+
+    const prompt =
+        challenge?.prompt && typeof challenge.prompt === "string"
+            ? formatPrompt(challenge.prompt)
+            : "";
 
     const handleOptionSelect = (index) => {
         if (selectedOption !== null) return;
@@ -29,6 +42,8 @@ export function MCQChallenge({ challenge, showExplanation = false }) {
             </div>
 
             <div className="challenge-title">{challenge.title}</div>
+
+            {prompt && <pre className="challenge-prompt">{prompt}</pre>}
 
             <div className="options">
                 {options.map((option, index) => (

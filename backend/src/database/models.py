@@ -15,6 +15,7 @@ class Challenge(Base):
     created_by = Column(String, nullable=False)
     title = Column(String, nullable=False)
     options = Column(String, nullable=False)
+    prompt = Column(String, nullable=True)
     correct_answer_id = Column(Integer, nullable=False)
     explanation = Column(String, nullable=False)
 

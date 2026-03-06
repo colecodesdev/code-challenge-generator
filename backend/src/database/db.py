@@ -40,6 +40,7 @@ def create_challenge(
         created_by: str,
         title: str,
         options: str,
+        prompt: str,
         correct_answer_id: int,
         explanation: str
 ):
@@ -48,6 +49,7 @@ def create_challenge(
         created_by = created_by,
         title = title,
         options = options,
+        prompt = prompt,
         correct_answer_id = correct_answer_id,
         explanation = explanation 
     )

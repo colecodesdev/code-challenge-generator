@@ -61,9 +61,11 @@ body {
   transition: color 0.2s;
 }
 
-.header-content nav a:hover {
+.header-content nav a:hover,
+.header-content nav a:focus {
   color: var(--primary-color);
 }
+
 
 .app-main {
   flex: 1;
@@ -308,4 +310,248 @@ body {
 .history-note p {
   color: #0369a1;
   font-size: 0.875rem;
+}
+
+.tool-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.tool-title {
+    margin: 0;
+    color: var(--text-color);
+}
+
+.tool-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.tool-link {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.tool-link:hover {
+    color: var(--primary-color);
+}
+
+.tool-link.active {
+    color: var(--primary-color);
+}
+
+.theme-toggle {
+    position: relative;
+    width: 48px;
+    height: 26px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    background: #d1d5db;
+    transition: background 0.25s ease;
+    padding: 0;
+}
+
+.theme-toggle.dark {
+    background: #374151;
+}
+
+.toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.25s ease;
+}
+
+.theme-toggle.dark .toggle-thumb {
+    transform: translateX(22px);
+}
+
+html[data-theme="dark"] {
+    --primary-color: #8ab4f8;
+    --error-color: #f28b82;
+    --text-color: #e8eaed;
+    --bg-color: #202124;
+    --border-color: #3c4043;
+}
+
+html[data-theme="dark"] body {
+    background-color: var(--bg-color);
+}
+
+html[data-theme="dark"] .app-header {
+    background-color: #202124;
+    border-bottom: 1px solid var(--border-color);
+}
+
+html[data-theme="dark"] .header-content h1 {
+    color: var(--text-color);
+}
+
+html[data-theme="dark"] .header-content nav a {
+    color: var(--text-color);
+}
+
+html[data-theme="dark"] .header-content nav a:hover,
+html[data-theme="dark"] .header-content nav a:focus {
+    color: var(--primary-color);
+}
+
+html[data-theme="dark"] .challenge-container,
+html[data-theme="dark"] .history-panel,
+html[data-theme="dark"] .auth-container,
+html[data-theme="dark"] .clerk-modal-content {
+    background-color: #303134;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+html[data-theme="dark"] .challenge-display,
+html[data-theme="dark"] .history-item,
+html[data-theme="dark"] .quota-display,
+html[data-theme="dark"] .explanation {
+    background-color: #2b2c2f;
+    border: 1px solid var(--border-color);
+}
+
+html[data-theme="dark"] .quota-display p,
+html[data-theme="dark"] .difficulty-selector label,
+html[data-theme="dark"] .explanation h4,
+html[data-theme="dark"] .explanation p,
+html[data-theme="dark"] .challenge-title,
+html[data-theme="dark"] .loading,
+html[data-theme="dark"] .redirect-message {
+    color: var(--text-color);
+}
+
+html[data-theme="dark"] .difficulty-selector select {
+    background-color: #2b2c2f;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+html[data-theme="dark"] .timestamp {
+    color: #9aa0a6;
+}
+
+html[data-theme="dark"] .option {
+    background-color: #2b2c2f;
+    border: 2px solid var(--border-color);
+}
+
+html[data-theme="dark"] .option:hover {
+    background-color: #35363a;
+    border-color: var(--primary-color);
+}
+
+html[data-theme="dark"] .option.selected {
+    background-color: rgba(138, 180, 248, 0.16);
+    border-color: var(--primary-color);
+}
+
+html[data-theme="dark"] .option.correct {
+    background-color: rgba(129, 201, 149, 0.18);
+    border-color: #81c995;
+}
+
+html[data-theme="dark"] .option.incorrect {
+    background-color: rgba(242, 139, 130, 0.18);
+    border-color: var(--error-color);
+}
+
+html[data-theme="dark"] .error-message {
+    background-color: rgba(242, 139, 130, 0.14);
+    color: var(--error-color);
+}
+
+html[data-theme="dark"] .waitlist-message {
+    background-color: rgba(253, 214, 99, 0.16);
+    color: #fdd663;
+}
+
+html[data-theme="dark"] .history-note {
+    background-color: rgba(138, 180, 248, 0.12);
+    border: 1px dashed rgba(138, 180, 248, 0.55);
+}
+
+html[data-theme="dark"] .history-note p {
+    color: var(--primary-color);
+}
+
+html[data-theme="dark"] .tool-link {
+    color: var(--text-color);
+}
+
+html[data-theme="dark"] .tool-link:hover,
+html[data-theme="dark"] .tool-link.active {
+    color: var(--primary-color);
+}
+
+html[data-theme="dark"] .clerk-modal {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+html[data-theme="dark"] .theme-toggle {
+    background: #5f6368;
+}
+
+html[data-theme="dark"] .theme-toggle.dark {
+    background: #151515;
+}
+
+html[data-theme="dark"] .toggle-thumb {
+    background: #e8eaed;
+}
+
+html[data-theme="dark"] .option {
+    color: var(--text-color);
+}
+
+.theme-toggle:focus {
+    outline: none;
+}
+
+.theme-toggle:focus-visible {
+    outline: none;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.brand-logo {
+    height: 48px;
+    width: auto;
+}
+
+.challenge-prompt {
+    margin: 0.75rem 0 1rem;
+    padding: 1rem;
+    background-color: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    white-space: pre-wrap;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    color: var(--text-color);
+}
+
+html[data-theme="dark"] .challenge-prompt {
+    background-color: #2b2c2f;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
 }

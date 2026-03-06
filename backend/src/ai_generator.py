@@ -13,6 +13,7 @@ Return ONLY valid JSON in this format:
 
 {{
   "title": "short problem title",
+  "prompt": "the full question text, including the code snippet",
   "options": [
     "answer option 1",
     "answer option 2",
@@ -44,10 +45,23 @@ def generate_challenge_with_ai(difficulty: str):
         max_tokens=400
     )
 
-    content = response.choices[0].message.content
+    content = response.choices[0].message.content or ""
+
+    clean = content.strip()
+
+    if "```" in clean:
+        clean = clean.replace("```json", "").replace("```", "").strip()
+
+    start = clean.find("{")
+    end = clean.rfind("}")
+
+    if start == -1 or end == -1:
+        raise RuntimeError(f"AI response did not contain JSON:\n{content}")
+
+    json_str = clean[start:end + 1]
 
     try:
-        data = json.loads(content)
+        data = json.loads(json_str)
     except Exception:
         raise RuntimeError(f"AI response was not valid JSON:\n{content}")
 
@@ -58,9 +72,13 @@ def generate_challenge_with_ai(difficulty: str):
     options = data.get("options")
     correct_answer_id = data.get("correct_answer_id")
     explanation = data.get("explanation")
+    prompt_text = data.get("prompt")
 
     if not isinstance(title, str) or not title.strip():
         raise RuntimeError("AI response missing valid 'title'")
+
+    if not isinstance(prompt_text, str) or not prompt_text.strip():
+        raise RuntimeError("AI response missing valid 'prompt'")
 
     if not isinstance(options, list) or len(options) < 2 or not all(isinstance(x, str) and x.strip() for x in options):
         raise RuntimeError("AI response missing valid 'options' (list of strings)")

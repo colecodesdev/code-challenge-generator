@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { MCQChallenge } from "./MCQChallenge.jsx";
 import { useApi } from "../utils/api.js";
+import { ChallengeHeader } from "./ChallengeHeader.jsx";
 
 export function ChallengeGenerator() {
     const [challenge, setChallenge] = useState(null);
@@ -48,7 +49,7 @@ export function ChallengeGenerator() {
 
     return (
         <div className="challenge-container">
-            <h2>Coding Challenge Generator</h2>
+            <ChallengeHeader />
 
             <div className="quota-display">
                 <p>Challenges remaining today: {quota?.quota_remaining ?? "—"}</p>
@@ -79,9 +80,7 @@ export function ChallengeGenerator() {
 
             {!error && !challenge && (
                 <div className="history-note">
-                    <p>
-                        If the backend isn’t running, generation will fail. Start it or set VITE_API_BASE_URL.
-                    </p>
+                    <p>Click "Generate Challenge" to create a new coding challenge.</p>
                 </div>
             )}
 

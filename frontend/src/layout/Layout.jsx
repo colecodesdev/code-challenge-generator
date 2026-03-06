@@ -1,31 +1,43 @@
-import { Outlet, Link } from "react-router-dom";
-import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
-
-const hasClerk = !!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+import { Outlet, Link } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { applyTheme, getStoredTheme, getSystemTheme, setStoredTheme } from "../utils/theme"
+import logo from "../../public/logo.svg";
 
 export function Layout() {
+    const [theme, setTheme] = useState("light")
+
+    useEffect(() => {
+        const t = getStoredTheme() || getSystemTheme()
+        setTheme(t)
+    }, [])
+
+    function toggleTheme() {
+        const next = theme === "dark" ? "light" : "dark"
+        setTheme(next)
+        applyTheme(next)
+        setStoredTheme(next)
+    }
+
     return (
         <div className="app-layout">
             <header className="app-header">
                 <div className="header-content">
-                    <h1>Code Challenge Generator</h1>
+                    <a href="/">
+                    <div className="brand">
+                            <img src={logo} alt="Reilly Labs Logo" className="brand-logo"/>
+                    </div>
+                    </a>
                     <nav>
-                        <Link to="/">Generate</Link>
+                        <Link to="/">Coding Challenge</Link>
                         <Link to="/history">History</Link>
-                        {hasClerk ? (
-                            <>
-                                <SignedOut>
-                                    <Link to="/auth">Sign In</Link>
-                                </SignedOut>
-                                <SignedIn>
-                                    <UserButton />
-                                </SignedIn>
-                            </>
-                        ) : (
-                            <span style={{ color: "#6b7280", fontSize: "0.9rem" }}>
-                Auth disabled
-              </span>
-                        )}
+                        <button
+                            type="button"
+                            className={`theme-toggle ${theme === "dark" ? "dark" : "light"}`}
+                            onClick={toggleTheme}
+                            aria-label="Toggle theme"
+                        >
+                            <span className="toggle-thumb"></span>
+                        </button>
                     </nav>
                 </div>
             </header>
@@ -34,5 +46,5 @@ export function Layout() {
                 <Outlet />
             </main>
         </div>
-    );
+    )
 }
