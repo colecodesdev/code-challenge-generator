@@ -1,18 +1,16 @@
-.env
-
 *.pem
 *.openssh
 *.key
 
-frontend/oac.json
-frontend/distribution.json
-frontend/bucket-policy.json
 route-tables.json
-
-.env.*
-!.env.example
-
 ccg-ec2-trust.json
 github-actions-oidc-trust.json
 
+frontend/oac.json
+frontend/distribution.json
+frontend/bucket-policy.json
+
+.env
+.env.*
+!.env.example
 !.env.production
