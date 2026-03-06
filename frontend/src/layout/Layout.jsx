@@ -29,7 +29,6 @@ export function Layout() {
                     </a>
                     <nav>
                         <Link to="/">Coding Challenge</Link>
-                        <Link to="/history">History</Link>
                         <button
                             type="button"
                             className={`theme-toggle ${theme === "dark" ? "dark" : "light"}`}
