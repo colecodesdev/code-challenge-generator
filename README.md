@@ -2,7 +2,7 @@
 
 ## Overview
 
-Code Challenge Generator is a full-stack AI web application that dynamically generates programming multiple-choice challenges using an AI model.
+Code Challenge Generator is a full-stack AI web application that dynamically generates programming challenges using a language model API.
 
 The project demonstrates practical integration of AI services into a production-style web architecture. A React frontend allows users to request coding challenges, while a FastAPI backend communicates with the OpenAI API to generate structured questions, answer options, and explanations.
 
