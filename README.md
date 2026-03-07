@@ -18,6 +18,10 @@ Production URL:
 
 https://d1tsfobuj7g5p2.cloudfront.net
 
+<p align="center">
+  ![Application Screenshot](docs/app-screenshot.png)
+</p>
+
 Example API endpoint:
 
 ```
