@@ -19,7 +19,7 @@ Production URL:
 https://d1tsfobuj7g5p2.cloudfront.net
 
 <p align="center">
-  <img src="docs/app-screenshot.png" width="800">
+  <img src="docs/app-screenshot.png" width="800" alt="screenshot of code challenge generator">
 </p>
 
 Example API endpoint:
