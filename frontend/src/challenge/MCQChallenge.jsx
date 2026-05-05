@@ -48,7 +48,7 @@ export function MCQChallenge({ challenge, showExplanation = false }) {
             <div className="options">
                 {options.map((option, index) => (
                     <button
-                        key={index}
+                        key={option}
                         type="button"
                         className={getOptionClass(index)}
                         onClick={() => handleOptionSelect(index)}
