@@ -1,3 +1,4 @@
+from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from . import models
@@ -61,4 +62,9 @@ def create_challenge(
     return db_challenge
 
 def get_user_challenges(db: Session, user_id: str):
-    return db.query(models.Challenge).filter(models.Challenge.created_by == user_id).all()
+    return (
+        db.query(models.Challenge)
+        .filter(models.Challenge.created_by == user_id)
+        .order_by(desc(models.Challenge.date_created))
+        .all()
+    )
