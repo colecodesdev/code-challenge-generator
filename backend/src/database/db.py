@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from . import models
 
+DAILY_QUOTA_DEFAULT = 50
+
 def get_challenge_quota(db: Session, user_id: str):
     return (db.query(models.ChallengeQuota).filter(models.ChallengeQuota.user_id == user_id).first())
 
@@ -13,7 +15,6 @@ def create_challenge_quota(db: Session, user_id: str):
     db.refresh(db_quota)
     return db_quota
 
-from datetime import datetime, timedelta
 
 def reset_quota_if_needed(db: Session, quota: models.ChallengeQuota):
     now = datetime.now()

@@ -4,6 +4,8 @@
 *.openssh
 *.key
 
+*.db
+
 frontend/oac.json
 frontend/distribution.json
 frontend/bucket-policy.json
