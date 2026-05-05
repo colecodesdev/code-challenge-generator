@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from sqlalchemy.orm import Session
 from datetime import datetime
+from typing import Literal
 import json
 import logging
 
@@ -21,10 +22,9 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 class ChallengeRequest(BaseModel):
-    difficulty: str
+    model_config = ConfigDict(json_schema_extra={"example": {"difficulty": "easy"}})
 
-    class Config:
-        json_schema_extra = {"example": {"difficulty": "easy"}}
+    difficulty: Literal["easy", "medium", "hard"]
 
 def serialize_quota(quota):
     return {
@@ -95,8 +95,7 @@ async def history(request: Request, db: Session = Depends(get_db)):
     user_id = user_details.get("user_id")
 
     challenges = get_user_challenges(db, user_id)
-    challenges_sorted = sorted(challenges, key=lambda c: c.date_created or datetime.min, reverse=True)
-    return [serialize_challenge(c) for c in challenges_sorted]
+    return [serialize_challenge(c) for c in challenges]
 
 @router.get("/quota")
 async def get_quota(request: Request, db: Session = Depends(get_db)):
