@@ -1,10 +1,15 @@
 from sqlalchemy import Column, Integer, String, DateTime, create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from datetime import datetime
+import os
 
-engine = create_engine('sqlite:///database.db', echo=True)
-Base = declarative_base()
+SQL_ECHO = os.getenv("SQL_ECHO", "false").lower() == "true"
+
+engine = create_engine('sqlite:///database.db', echo=SQL_ECHO)
+
+
+class Base(DeclarativeBase):
+    pass
 
 class Challenge(Base):
     __tablename__ = 'challenges'
@@ -12,7 +17,7 @@ class Challenge(Base):
     id = Column(Integer, primary_key=True)
     difficulty = Column(String, nullable=False)
     date_created = Column(DateTime, default=datetime.now)
-    created_by = Column(String, nullable=False)
+    created_by = Column(String, nullable=False, index=True)
     title = Column(String, nullable=False)
     options = Column(String, nullable=False)
     prompt = Column(String, nullable=True)
