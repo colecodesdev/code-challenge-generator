@@ -2,20 +2,16 @@
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals for the next feature. Populated by `/feature load`. -->
+Add return type annotations to public backend functions per [coding-standards.md](context/coding-standards.md). FastAPI uses these hints for OpenAPI generation; missing types skip response validation. Two route serializers (`serialize_quota`, `serialize_challenge`) also have no parameter types.
 
 ## Notes
 
-<!-- Additional context, constraints, or details from the spec. -->
+- Code-scanner finding #9 (medium). Sites: [backend/src/ai_generator.py](backend/src/ai_generator.py), [backend/src/utils.py](backend/src/utils.py), [backend/src/database/db.py](backend/src/database/db.py), [backend/src/routes/challenge.py](backend/src/routes/challenge.py).
+- PEP 604 union syntax (`X | None`), not `Optional[X]`.
+- Pure annotation change. No runtime behavior change. Response shapes are unchanged so OpenAPI schema only gains return-type info.
 
 ## History
-
-<!--
-Append completed features to the end (oldest first, newest last).
-Each entry should be a single concise paragraph capturing what shipped, files touched, and any non-obvious decisions.
-The `/feature complete` action handles this automatically.
--->

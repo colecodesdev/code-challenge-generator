@@ -4,7 +4,7 @@ import os
 
 load_dotenv()
 
-def authenticate_and_get_user_details(request: Request):
+def authenticate_and_get_user_details(request: Request) -> dict:
     auth_header = request.headers.get("authorization")
 
     if not auth_header:
