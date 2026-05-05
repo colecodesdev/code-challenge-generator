@@ -2,20 +2,16 @@
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals for the next feature. Populated by `/feature load`. -->
+Stop forwarding internal exception messages to API clients via `detail=str(e)`. Log the underlying error server-side and return a generic message so OpenAI SDK strings, stack details, and library version info do not appear in HTTP responses.
 
 ## Notes
 
-<!-- Additional context, constraints, or details from the spec. -->
+- Code-scanner finding #2 (high). Sites: [backend/src/utils.py:41](backend/src/utils.py#L41), [backend/src/routes/challenge.py:65](backend/src/routes/challenge.py#L65), [backend/src/routes/challenge.py:67](backend/src/routes/challenge.py#L67).
+- The `OPENAI_API_KEY is not set` branch in `challenge.py` keeps `str(e)` because the message is operator-friendly and not sensitive. The catch-all branch and the unknown-error path in `utils.py` switch to generic copy.
+- Logging uses the stdlib `logging` module with `.exception()` so the full traceback lands in container stdout (CloudWatch).
 
 ## History
-
-<!--
-Append completed features to the end (oldest first, newest last).
-Each entry should be a single concise paragraph capturing what shipped, files touched, and any non-obvious decisions.
-The `/feature complete` action handles this automatically.
--->
