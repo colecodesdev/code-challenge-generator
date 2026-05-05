@@ -17,3 +17,9 @@ frontend/bucket-policy.json
 
 # Per-developer agent state, not portable.
 .claude/agent-memory/
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+*card.md
