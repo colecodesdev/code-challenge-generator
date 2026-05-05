@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from sqlalchemy.orm import Session
 from datetime import datetime
+from typing import Literal
 import json
 
 from ..ai_generator import generate_challenge_with_ai
@@ -18,10 +19,9 @@ from ..database.db import (
 router = APIRouter()
 
 class ChallengeRequest(BaseModel):
-    difficulty: str
+    model_config = ConfigDict(json_schema_extra={"example": {"difficulty": "easy"}})
 
-    class Config:
-        json_schema_extra = {"example": {"difficulty": "easy"}}
+    difficulty: Literal["easy", "medium", "hard"]
 
 def serialize_quota(quota):
     return {
