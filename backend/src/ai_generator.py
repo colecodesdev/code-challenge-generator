@@ -3,6 +3,7 @@ import json
 from openai import OpenAI
 
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
+MAX_TOKENS = int(os.getenv("OPENAI_MAX_TOKENS", "800"))
 
 PROMPT_TEMPLATE = """
 Generate a multiple-choice programming challenge.
@@ -42,10 +43,17 @@ def generate_challenge_with_ai(difficulty: str):
             {"role": "user", "content": prompt}
         ],
         temperature=0.7,
-        max_tokens=400
+        max_tokens=MAX_TOKENS
     )
 
-    content = response.choices[0].message.content or ""
+    choice = response.choices[0]
+    if choice.finish_reason == "length":
+        raise RuntimeError(
+            f"AI response was truncated (hit {MAX_TOKENS}-token limit). "
+            "Increase OPENAI_MAX_TOKENS."
+        )
+
+    content = choice.message.content or ""
 
     clean = content.strip()
 

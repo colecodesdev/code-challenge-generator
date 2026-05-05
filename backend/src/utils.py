@@ -1,8 +1,13 @@
 from fastapi import HTTPException, Request
 from dotenv import load_dotenv
+import logging
 import os
 
+from .config import get_allowed_origins
+
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 def authenticate_and_get_user_details(request: Request):
     auth_header = request.headers.get("authorization")
@@ -21,7 +26,7 @@ def authenticate_and_get_user_details(request: Request):
         request_state = clerk_sdk.authenticate_request(
             request,
             AuthenticateRequestOptions(
-                authorized_parties=["http://localhost:5173", "http://localhost:5174"],
+                authorized_parties=get_allowed_origins(),
                 jwt_key=os.getenv("JWT_KEY"),
             ),
         )
@@ -37,5 +42,6 @@ def authenticate_and_get_user_details(request: Request):
 
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        logger.exception("Clerk authentication failed")
+        raise HTTPException(status_code=500, detail="Authentication error")
