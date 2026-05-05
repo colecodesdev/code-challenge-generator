@@ -1,15 +1,10 @@
 import { Outlet, Link } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { applyTheme, getStoredTheme, getSystemTheme, setStoredTheme } from "../utils/theme"
 import logo from "../../public/logo.svg";
 
 export function Layout() {
-    const [theme, setTheme] = useState("light")
-
-    useEffect(() => {
-        const t = getStoredTheme() || getSystemTheme()
-        setTheme(t)
-    }, [])
+    const [theme, setTheme] = useState(() => getStoredTheme() || getSystemTheme())
 
     function toggleTheme() {
         const next = theme === "dark" ? "light" : "dark"
