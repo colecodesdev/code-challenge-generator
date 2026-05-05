@@ -1,7 +1,10 @@
 {
-  "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [],
   "permissions": {
-    "allow": []
-  }
+    "allow": [
+      "Read(//c/Users/colto/.claude/**)",
+      "Read(//c/Users/colto/.claude/skills/**)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": []
 }
