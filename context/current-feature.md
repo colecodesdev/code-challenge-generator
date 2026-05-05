@@ -2,40 +2,32 @@
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-Add return type annotations to public backend functions per [coding-standards.md](context/coding-standards.md). FastAPI uses these hints for OpenAPI generation; missing types skip response validation. Two route serializers (`serialize_quota`, `serialize_challenge`) also have no parameter types.
+<!-- Goals for the next feature. Populated by `/feature load`. -->
 
 ## Notes
 
-- Code-scanner finding #9 (medium). Sites: [backend/src/ai_generator.py](backend/src/ai_generator.py), [backend/src/utils.py](backend/src/utils.py), [backend/src/database/db.py](backend/src/database/db.py), [backend/src/routes/challenge.py](backend/src/routes/challenge.py).
-- PEP 604 union syntax (`X | None`), not `Optional[X]`.
-- Pure annotation change. No runtime behavior change. Response shapes are unchanged so OpenAPI schema only gains return-type info.
-
-Migrate the ORM `Base` from the legacy `sqlalchemy.ext.declarative.declarative_base()` shim to SQLAlchemy 2.0's `DeclarativeBase` class, satisfying [coding-standards.md](context/coding-standards.md). The legacy import was confirmed to no longer exist in the currently installed SQLAlchemy 2.0.47, so this is the difference between "deprecation warning" and "ImportError on app start" depending on patch version.
-Use the option text as the React `key` for MCQ option buttons instead of the array index. Coding standards prohibit array indexes as keys "when the list can reorder," and although the current parent always remounts on a new challenge, the convention guards against subtle state bugs if the parent ever optimises rendering.
-
-## Notes
-
-- Code-scanner finding #11 (low). Site: [frontend/src/challenge/MCQChallenge.jsx:49-51](frontend/src/challenge/MCQChallenge.jsx#L49-L51).
-- Options are unique strings within a single challenge (the AI prompt asks for four distinct answer choices), so option text is a safe stable key.
-- One-line change.
-Initialize Layout's theme state from the storage/system utility on first render instead of defaulting to `"light"` and patching it from a `useEffect`. The current pattern guarantees a "light → actual theme" state transition on every mount, which can flicker the toggle thumb on slow devices.
-
-## Notes
-
-- Code-scanner finding #10 (low). Site: [frontend/src/layout/Layout.jsx:7-12](frontend/src/layout/Layout.jsx#L7-L12).
-- Coding standards explicitly call out "do not duplicate theme state in component state" and "Apply 'You Might Not Need an Effect' before reaching for useEffect" — this is exactly that pattern.
-- Use `useState` lazy initializer to read once at mount. Drop the now-unused `useEffect` import.
-
-Stop silently truncating AI responses. `max_tokens=400` is too tight for a 4-option challenge that includes a code snippet plus a real explanation, so longer hard-difficulty challenges get cut off mid-JSON and surface as opaque "not valid JSON" errors.
-
-## Notes
-
-- Code-scanner finding #7 (medium). Site: [backend/src/database/models.py:2](backend/src/database/models.py#L2), [backend/src/database/models.py:7](backend/src/database/models.py#L7).
-- Pure rename: `from sqlalchemy.orm import DeclarativeBase` and `class Base(DeclarativeBase): pass`. No table-shape change, no migration.
-- Scope intentionally narrow: not splitting models.py engine setup into the `db.py`/`models.py` layout the standards prefer. That's a larger refactor; do it separately.
+<!-- Additional context, constraints, or details from the spec. -->
 
 ## History
+
+<!--
+Append completed features to the end (oldest first, newest last).
+Each entry should be a single concise paragraph capturing what shipped, files touched, and any non-obvious decisions.
+The `/feature complete` action handles this automatically.
+-->
+
+- **Constrain `difficulty` to `Literal` + Pydantic v2 `ConfigDict`** (code-scanner #3 high, #8 medium). Restricted `ChallengeRequest.difficulty` in [backend/src/routes/challenge.py](backend/src/routes/challenge.py) to `Literal["easy", "medium", "hard"]` so non-allowed strings return 422 at the route boundary instead of being interpolated into the OpenAI prompt template (a prompt-injection vector). Same edit migrated `class Config` to `model_config = ConfigDict(...)`.
+- **Stop leaking internal error messages** (code-scanner #2 high). Replaced `detail=str(e)` on 500/502 responses in [backend/src/utils.py](backend/src/utils.py) and [backend/src/routes/challenge.py](backend/src/routes/challenge.py) with generic copy and `logger.exception()` server-side. The OpenAI-key-not-set branch keeps `str(e)` since that message is operator-friendly.
+- **Make Clerk `authorized_parties` production-aware** (code-scanner #1 high). Reused the existing `CORS_ORIGINS` env (the set of trusted frontend origins is identical for both checks) instead of introducing a new `FRONTEND_URL`. Extracted the parser into a new [backend/src/config.py](backend/src/config.py) so [backend/src/app.py](backend/src/app.py) and [backend/src/utils.py](backend/src/utils.py) share one source of truth. Updated `.env.example` to document both uses.
+- **Push history `ORDER BY` into the DB and index `created_by`** (code-scanner #5 medium). Replaced the Python-side `sorted()` in [backend/src/routes/challenge.py](backend/src/routes/challenge.py) with `order_by(desc(date_created))` in [backend/src/database/db.py](backend/src/database/db.py), and added `index=True` to `Challenge.created_by` in [backend/src/database/models.py](backend/src/database/models.py). SQLite ephemerality means no migration is needed; `Base.metadata.create_all()` creates the index on next deploy.
+- **Make SQLAlchemy `echo` opt-in** (code-scanner #4 medium). Hardcoded `echo=True` was emitting every SQL statement plus bound parameters to CloudWatch. Switched to `SQL_ECHO` env (default off) in [backend/src/database/models.py](backend/src/database/models.py) and added the knob to `.env.example`.
+- **Raise OpenAI `max_tokens` to 800 + detect truncation** (code-scanner #6 medium). 400 tokens silently truncated longer hard-difficulty challenges and surfaced as opaque "not valid JSON" errors. Bumped the default in [backend/src/ai_generator.py](backend/src/ai_generator.py), exposed it as `OPENAI_MAX_TOKENS`, and added a `finish_reason == "length"` check that raises a clear `RuntimeError` before parsing.
+- **Migrate to SQLAlchemy 2.0 `DeclarativeBase`** (code-scanner #7 medium). Swapped the legacy `sqlalchemy.ext.declarative.declarative_base()` shim (which is gone in SQLAlchemy 2.0.47) for `class Base(DeclarativeBase): pass` in [backend/src/database/models.py](backend/src/database/models.py). Pure rename, no schema change.
+- **Add return type annotations** (code-scanner #9 medium). Filled in missing return annotations across [backend/src/ai_generator.py](backend/src/ai_generator.py), [backend/src/utils.py](backend/src/utils.py), [backend/src/database/db.py](backend/src/database/db.py), and [backend/src/routes/challenge.py](backend/src/routes/challenge.py) plus parameter types on `serialize_quota` / `serialize_challenge`. PEP 604 union syntax (`X | None`).
+- **Initialize Layout theme via `useState` lazy initializer** (code-scanner #10 low). Replaced `useState("light")` + `useEffect` in [frontend/src/layout/Layout.jsx](frontend/src/layout/Layout.jsx) with a single `useState(() => getStoredTheme() || getSystemTheme())` to avoid the guaranteed "light → actual theme" mount transition.
+- **Use option text as MCQ React key** (code-scanner #11 low). Switched [frontend/src/challenge/MCQChallenge.jsx](frontend/src/challenge/MCQChallenge.jsx) from `key={index}` to `key={option}` per coding-standards' rule against array-index keys. Options are unique strings within a challenge.
+- **Document `.env.production` safety** (code-scanner #12 low). Added an in-file warning to [frontend/.env.production](frontend/.env.production) explaining that every `VITE_*` variable is baked into the public JS bundle and tracked in git, so secrets must never go there.

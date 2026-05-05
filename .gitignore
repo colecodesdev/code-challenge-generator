@@ -14,3 +14,6 @@ frontend/bucket-policy.json
 .env.*
 !.env.example
 !.env.production
+
+# Per-developer agent state, not portable.
+.claude/agent-memory/
