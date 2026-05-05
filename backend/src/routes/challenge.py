@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from typing import Literal
 import json
+import logging
 
 from ..ai_generator import generate_challenge_with_ai
 from ..utils import authenticate_and_get_user_details
@@ -17,6 +18,8 @@ from ..database.db import (
 )
 
 router = APIRouter()
+
+logger = logging.getLogger(__name__)
 
 class ChallengeRequest(BaseModel):
     model_config = ConfigDict(json_schema_extra={"example": {"difficulty": "easy"}})
@@ -62,9 +65,11 @@ async def generate_challenge(payload: ChallengeRequest, request: Request, db: Se
         msg = str(e)
         if "OPENAI_API_KEY is not set" in msg:
             raise HTTPException(status_code=400, detail=msg)
-        raise HTTPException(status_code=500, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=str(e))
+        logger.exception("Challenge generation failed")
+        raise HTTPException(status_code=500, detail="Failed to generate challenge")
+    except Exception:
+        logger.exception("Upstream AI service error")
+        raise HTTPException(status_code=502, detail="Upstream AI service error")
 
     options_json = json.dumps(challenge_data["options"])
     new_challenge = create_challenge(
