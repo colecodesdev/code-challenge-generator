@@ -2,20 +2,16 @@
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals for the next feature. Populated by `/feature load`. -->
+Use the option text as the React `key` for MCQ option buttons instead of the array index. Coding standards prohibit array indexes as keys "when the list can reorder," and although the current parent always remounts on a new challenge, the convention guards against subtle state bugs if the parent ever optimises rendering.
 
 ## Notes
 
-<!-- Additional context, constraints, or details from the spec. -->
+- Code-scanner finding #11 (low). Site: [frontend/src/challenge/MCQChallenge.jsx:49-51](frontend/src/challenge/MCQChallenge.jsx#L49-L51).
+- Options are unique strings within a single challenge (the AI prompt asks for four distinct answer choices), so option text is a safe stable key.
+- One-line change.
 
 ## History
-
-<!--
-Append completed features to the end (oldest first, newest last).
-Each entry should be a single concise paragraph capturing what shipped, files touched, and any non-obvious decisions.
-The `/feature complete` action handles this automatically.
--->
