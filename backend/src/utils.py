@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 import logging
 import os
 
+from .config import get_allowed_origins
+
 load_dotenv()
 
 logger = logging.getLogger(__name__)
@@ -24,7 +26,7 @@ def authenticate_and_get_user_details(request: Request):
         request_state = clerk_sdk.authenticate_request(
             request,
             AuthenticateRequestOptions(
-                authorized_parties=["http://localhost:5173", "http://localhost:5174"],
+                authorized_parties=get_allowed_origins(),
                 jwt_key=os.getenv("JWT_KEY"),
             ),
         )
