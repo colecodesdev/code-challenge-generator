@@ -1,10 +1,12 @@
 from sqlalchemy import Column, Integer, String, DateTime, create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from datetime import datetime
 
 engine = create_engine('sqlite:///database.db', echo=True)
-Base = declarative_base()
+
+
+class Base(DeclarativeBase):
+    pass
 
 class Challenge(Base):
     __tablename__ = 'challenges'
