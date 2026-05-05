@@ -5,11 +5,11 @@ from . import models
 
 DAILY_QUOTA_DEFAULT = 50
 
-def get_challenge_quota(db: Session, user_id: str):
+def get_challenge_quota(db: Session, user_id: str) -> models.ChallengeQuota | None:
     return (db.query(models.ChallengeQuota).filter(models.ChallengeQuota.user_id == user_id).first())
 
 
-def create_challenge_quota(db: Session, user_id: str):
+def create_challenge_quota(db: Session, user_id: str) -> models.ChallengeQuota:
     db_quota = models.ChallengeQuota(user_id=user_id)
     db.add(db_quota)
     db.commit()
@@ -17,7 +17,7 @@ def create_challenge_quota(db: Session, user_id: str):
     return db_quota
 
 
-def reset_quota_if_needed(db: Session, quota: models.ChallengeQuota):
+def reset_quota_if_needed(db: Session, quota: models.ChallengeQuota) -> models.ChallengeQuota:
     now = datetime.now()
 
     if quota.last_reset_date is None:
@@ -45,7 +45,7 @@ def create_challenge(
         prompt: str,
         correct_answer_id: int,
         explanation: str
-):
+) -> models.Challenge:
     db_challenge = models.Challenge(
         difficulty = difficulty,
         created_by = created_by,

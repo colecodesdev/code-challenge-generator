@@ -26,7 +26,7 @@ Return ONLY valid JSON in this format:
 }}
 """
 
-def generate_challenge_with_ai(difficulty: str):
+def generate_challenge_with_ai(difficulty: str) -> dict:
     api_key = os.getenv("OPENAI_API_KEY")
 
     if not api_key:

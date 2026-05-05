@@ -8,6 +8,7 @@ import logging
 
 from ..ai_generator import generate_challenge_with_ai
 from ..utils import authenticate_and_get_user_details
+from ..database import models
 from ..database.models import get_db
 from ..database.db import (
     get_challenge_quota,
@@ -26,14 +27,14 @@ class ChallengeRequest(BaseModel):
 
     difficulty: Literal["easy", "medium", "hard"]
 
-def serialize_quota(quota):
+def serialize_quota(quota: models.ChallengeQuota) -> dict:
     return {
         "user_id": quota.user_id,
         "quota_remaining": quota.quota_remaining,
         "last_reset_date": quota.last_reset_date.isoformat() if quota.last_reset_date else None,
     }
 
-def serialize_challenge(ch):
+def serialize_challenge(ch: models.Challenge) -> dict:
     return {
         "id": ch.id,
         "difficulty": ch.difficulty,
@@ -46,7 +47,7 @@ def serialize_challenge(ch):
     }
 
 @router.post("/generate-challenge")
-async def generate_challenge(payload: ChallengeRequest, request: Request, db: Session = Depends(get_db)):
+async def generate_challenge(payload: ChallengeRequest, request: Request, db: Session = Depends(get_db)) -> dict:
     user_details = authenticate_and_get_user_details(request)
     user_id = user_details.get("user_id")
 
@@ -90,7 +91,7 @@ async def generate_challenge(payload: ChallengeRequest, request: Request, db: Se
     return serialize_challenge(new_challenge)
 
 @router.get("/history")
-async def history(request: Request, db: Session = Depends(get_db)):
+async def history(request: Request, db: Session = Depends(get_db)) -> list[dict]:
     user_details = authenticate_and_get_user_details(request)
     user_id = user_details.get("user_id")
 
@@ -98,7 +99,7 @@ async def history(request: Request, db: Session = Depends(get_db)):
     return [serialize_challenge(c) for c in challenges]
 
 @router.get("/quota")
-async def get_quota(request: Request, db: Session = Depends(get_db)):
+async def get_quota(request: Request, db: Session = Depends(get_db)) -> dict:
     user_details = authenticate_and_get_user_details(request)
     user_id = user_details.get("user_id")
 

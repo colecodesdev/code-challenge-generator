@@ -6,6 +6,14 @@ In Progress
 
 ## Goals
 
+Add return type annotations to public backend functions per [coding-standards.md](context/coding-standards.md). FastAPI uses these hints for OpenAPI generation; missing types skip response validation. Two route serializers (`serialize_quota`, `serialize_challenge`) also have no parameter types.
+
+## Notes
+
+- Code-scanner finding #9 (medium). Sites: [backend/src/ai_generator.py](backend/src/ai_generator.py), [backend/src/utils.py](backend/src/utils.py), [backend/src/database/db.py](backend/src/database/db.py), [backend/src/routes/challenge.py](backend/src/routes/challenge.py).
+- PEP 604 union syntax (`X | None`), not `Optional[X]`.
+- Pure annotation change. No runtime behavior change. Response shapes are unchanged so OpenAPI schema only gains return-type info.
+
 Migrate the ORM `Base` from the legacy `sqlalchemy.ext.declarative.declarative_base()` shim to SQLAlchemy 2.0's `DeclarativeBase` class, satisfying [coding-standards.md](context/coding-standards.md). The legacy import was confirmed to no longer exist in the currently installed SQLAlchemy 2.0.47, so this is the difference between "deprecation warning" and "ImportError on app start" depending on patch version.
 Use the option text as the React `key` for MCQ option buttons instead of the array index. Coding standards prohibit array indexes as keys "when the list can reorder," and although the current parent always remounts on a new challenge, the convention guards against subtle state bugs if the parent ever optimises rendering.
 
